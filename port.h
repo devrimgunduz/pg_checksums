@@ -30,6 +30,17 @@
 #define PG_TEMP_FILE_PREFIX "pgsql_tmp"
 #endif
 
+#if PG_VERSION_NUM < 180000
+/*
+ * Tablespace path (relative to installation's $PGDATA).
+ *
+ * These values should not be changed as many tools rely on it.
+ */
+#define PG_TBLSPC_DIR "pg_tblspc"
+#define PG_TBLSPC_DIR_SLASH "pg_tblspc/"       /* required for strings
+												* comparisons */
+#endif
+
 /*
  * pg_xlog has been renamed to pg_wal in version 10.
  */
