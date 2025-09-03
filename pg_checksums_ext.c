@@ -3,7 +3,7 @@
  * pg_checksums_ext.c
  *	  Checks, enables or disables page level checksums for a cluster
  *
- * Copyright (c) 2010-2024, PostgreSQL Global Development Group
+ * Copyright (c) 2010-2025, PostgreSQL Global Development Group
  *
  * IDENTIFICATION
  *	  pg_checksums_ext.c

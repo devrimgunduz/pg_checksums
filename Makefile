@@ -2,7 +2,7 @@
 #
 # Makefile for pg_checksums_ext
 #
-# Copyright (c) 1998-2022, PostgreSQL Global Development Group
+# Copyright (c) 1998-2025, PostgreSQL Global Development Group
 #
 # pg_checksums_ext/Makefile
 #
