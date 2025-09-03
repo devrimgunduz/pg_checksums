@@ -137,11 +137,7 @@ update_checkpoint_lsn(void)
 {
 	bool	crc_ok;
 
-#if PG_VERSION_NUM >= 120000
 	ControlFile = get_controlfile(DataDir, &crc_ok);
-#else
-	ControlFile = get_controlfile(DataDir, progname, &crc_ok);
-#endif
 	if (!crc_ok)
 	{
 		pg_log_error("pg_control CRC value is incorrect");
@@ -866,11 +862,7 @@ main(int argc, char *argv[])
 	CheckDataVersion(DataDir);
 
 	/* Read the control file and check compatibility */
-#if PG_VERSION_NUM >= 120000
 	ControlFile = get_controlfile(DataDir, &crc_ok);
-#else
-	ControlFile = get_controlfile(DataDir, progname, &crc_ok);
-#endif
 	if (!crc_ok)
 	{
 		pg_log_error("pg_control CRC value is incorrect");
@@ -1029,14 +1021,12 @@ main(int argc, char *argv[])
 			sync_pgdata(DataDir, PG_VERSION_NUM, sync_method, true);
 #elif PG_VERSION_NUM >= 170000
 			sync_pgdata(DataDir, PG_VERSION_NUM, sync_method);
-#elif PG_VERSION_NUM >= 120000
-			fsync_pgdata(DataDir, PG_VERSION_NUM);
 #else
-			fsync_pgdata(DataDir, progname, PG_VERSION_NUM);
+			fsync_pgdata(DataDir, PG_VERSION_NUM);
 #endif
 		}
 		pg_log_info("updating control file");
-		updateControlFile(DataDir, ControlFile, do_sync);
+		update_controlfile(DataDir, ControlFile, do_sync);
 
 		if (verbose)
 			printf(_("Data checksum version: %u\n"), ControlFile->data_checksum_version);

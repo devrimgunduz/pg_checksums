@@ -13,9 +13,7 @@
 #include "catalog/pg_control.h"
 #include "common/file_perm.h"
 
-#if PG_VERSION_NUM >= 120000 
 #include "common/logging.h" 
-#endif 
 #if PG_VERSION_NUM >= 140000
 #include "fe_utils/option_utils.h"
 #endif
@@ -44,54 +42,9 @@
 
 extern char *DataDir;
 
-static const char *progname;
-
-void updateControlFile(char *DataDir, ControlFileData *ControlFile, bool do_sync);
-
 #if PG_VERSION_NUM >=  170000
 extern bool parse_sync_method(const char *optarg,
 			      DataDirSyncMethod *sync_method);
-#endif
-
-#if PG_VERSION_NUM < 120000
-enum pg_log_level
-{
-        PG_LOG_NOTSET = 0,
-        PG_LOG_DEBUG,
-        PG_LOG_INFO,
-        PG_LOG_WARNING,
-        PG_LOG_ERROR,
-        PG_LOG_FATAL,
-        PG_LOG_OFF,
-};
-
-extern enum pg_log_level __pg_log_level;
-
-#define PG_LOG_FLAG_TERSE	1
-
-void		pg_logging_init(const char *argv0);
-void		pg_log_generic(enum pg_log_level level, const char *pg_restrict fmt,...) pg_attribute_printf(2, 3);
-void		pg_log_generic_v(enum pg_log_level level, const char *pg_restrict fmt, va_list ap) pg_attribute_printf(2, 0);
-
-#define pg_log_fatal(...) do { \
-		if (likely(__pg_log_level <= PG_LOG_FATAL)) pg_log_generic(PG_LOG_FATAL, __VA_ARGS__); \
-	} while(0)
-
-#define pg_log_error(...) do { \
-		if (likely(__pg_log_level <= PG_LOG_ERROR)) pg_log_generic(PG_LOG_ERROR, __VA_ARGS__); \
-	} while(0)
-
-#define pg_log_warning(...) do { \
-		if (likely(__pg_log_level <= PG_LOG_WARNING)) pg_log_generic(PG_LOG_WARNING, __VA_ARGS__); \
-	} while(0)
-
-#define pg_log_info(...) do { \
-		if (likely(__pg_log_level <= PG_LOG_INFO)) pg_log_generic(PG_LOG_INFO, __VA_ARGS__); \
-	} while(0)
-
-#define pg_log_debug(...) do { \
-		if (unlikely(__pg_log_level <= PG_LOG_DEBUG)) pg_log_generic(PG_LOG_DEBUG, __VA_ARGS__); \
-	} while(0)
 #endif
 
 void CheckDataVersion(char *DataDir);

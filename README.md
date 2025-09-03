@@ -14,5 +14,4 @@ online, contrary to PostgreSQL's `pg_checksums`.
 Other changes include the possibility to toggle progress reporting via the
 `SIGUSR1` signal, more fine-grained progress reporting and I/O rate limiting.
 
-PostgreSQL versions since 9.3 are supported, the November 8th 2018 PostgreSQL
-point release is required.
+PostgreSQL versions since 13 are supported.
