@@ -1025,7 +1025,9 @@ main(int argc, char *argv[])
 		if (do_sync)
 		{
 			pg_log_info("syncing data directory");
-#if PG_VERSION_NUM >= 170000
+#if PG_VERSION_NUM >= 180000
+			sync_pgdata(DataDir, PG_VERSION_NUM, sync_method, true);
+#elif PG_VERSION_NUM >= 170000
 			sync_pgdata(DataDir, PG_VERSION_NUM, sync_method);
 #elif PG_VERSION_NUM >= 120000
 			fsync_pgdata(DataDir, PG_VERSION_NUM);
