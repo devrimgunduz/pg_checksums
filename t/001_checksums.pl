@@ -13,10 +13,15 @@ program_version_ok('pg_checksums_ext');
 program_options_handling_ok('pg_checksums_ext');
 
 my $tempdir = TestLib::tempdir;
+my $pg_version = `pg_config --version| sed -e 's/beta/\./' -e 's/[^0-9\.]//g' | awk -F . '{ print \$1 }'`;
 
 # Initialize node with checksums disabled.
 my $node = get_new_node('node_checksum');
-$node->init;
+if ($pg_version >= 18) {
+	$node->init(extra => [ '--no-data-checksums' ]);
+} else {
+	$node->init;
+}
 
 $node->start;
 my $pgdata = $node->data_dir;
