@@ -26,7 +26,6 @@
 
 #include "catalog/pg_control.h"
 #include "common/controldata_utils.h"
-#include "common/file_perm.h"
 #include "common/file_utils.h"
 #include "common/relpath.h"
 #include "pg_getopt.h"
@@ -34,6 +33,7 @@
 #include "storage/bufpage.h"
 #include "storage/checksum.h"
 #include "storage/checksum_impl.h"
+
 
 static int64 files_scanned = 0;
 static int64 files_written = 0;
@@ -72,11 +72,11 @@ static const char *progname;
 /*
  * Progress status information.
  */
-int64		total_size = 0;
-int64		current_size = 0;
-instr_time	last_progress_report;
-instr_time	last_throttle;
-instr_time	scan_started;
+static int64 total_size = 0;
+static int64 current_size = 0;
+static instr_time last_progress_report;
+static instr_time last_throttle;
+static instr_time scan_started;
 
 static void
 usage(void)
@@ -120,6 +120,8 @@ struct exclude_list_item
 
 /*
  * List of files excluded from checksum validation.
+ *
+ * Note: this list should be kept in sync with what basebackup.c includes.
  */
 static const struct exclude_list_item skip[] = {
 	{"pg_control", false},
@@ -660,11 +662,7 @@ scan_directory(const char *basedir, const char *subdir, bool sizeonly)
 			if (!sizeonly)
 				scan_file(fn, segmentno);
 		}
-#ifndef WIN32
 		else if (S_ISDIR(st.st_mode) || S_ISLNK(st.st_mode))
-#else
-		else if (S_ISDIR(st.st_mode) || pgwin32_is_junction(fn))
-#endif
 		{
 			/*
 			 * If going through the entries of pg_tblspc, we assume to operate
